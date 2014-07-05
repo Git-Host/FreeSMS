@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+	<title>Free SMS</title>
+	<link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/css/bootstrap.min.css">
+</head>
+<body style="background-color: #99FF99">
+	<h1 style="position: absolute; top: 5%; left: 38%;">
+		FreeSMS 
+	</h1> 
+	<h3 style="position: absolute; top: 13%; left: 30%;">
+		Don't have a phone on hand? <br/>No worry, try to text for free here.
+	</h3>
+	<div id="container" style="position: absolute; top: 30%; left: 35%;">
+		<form action="/sendMessage" method="post">
+		    <p>Your email address (Optional)</p>
+		    <input type="text" name="replyEmail" placeholder="Your email address(Optional)" class="">
+		    <br/> 
+		    <p>Photo number you want to send the message</p>
+		    <input type="text" name="phoneNumber" placeholder="Recipient phone number">
+		    <p>Enter message subject</p>
+		    <input type="text" name="subject" placeholder="Subject">
+		    <p>Enter message body</p>
+		    <input type="text" name="body" placeholder="Body">
+		    <br/>
+		    <input type="submit" value="Submit" class="btn-primary btn"/>
+	    </form>
+	</div>
+	
+</body>
+</html>
