@@ -15,6 +15,10 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 
 //import com.telapi.api.TelapiConnector;
 //import com.telapi.api.configuration.BasicTelapiConfiguration;
@@ -36,11 +40,17 @@ public class MessageService extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final EmailService EMAIL_SERVICE = new EmailService();
 	private static final CarrierService CARRIER_SERVICE = new CarrierService();
+	private static Logger logger = Logger.getLogger(MessageService.class);
 	
-	// TODO Change back in local
 	private final String USERNAME = "USERNAME";
 	private final String PASSWORD = "PASSWORD";
 	private final String CARRIRE_LOOKUP_URL = "https://api.telapi.com/v1/Accounts/" + USERNAME + "/Lookups/Carrier.json?PhoneNumber=";
+	
+	public MessageService() {
+		ConsoleAppender appender = new ConsoleAppender(new PatternLayout());
+		logger.setLevel(Level.INFO);
+		logger.addAppender(appender);
+	}
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -79,21 +89,22 @@ public class MessageService extends HttpServlet {
             httpclient.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USERNAME + ":" + PASSWORD));
             HttpPost httpPost = new HttpPost(CARRIRE_LOOKUP_URL + phoneNumber);
 
-            System.out.println("executing request " + httpPost.getRequestLine());
+            logger.info("executing request : " + httpPost.getRequestLine());
             HttpResponse dresponse = httpclient.execute(httpPost);
 
-            System.out.println(dresponse.getStatusLine());
+            logger.info("Response status : " + dresponse.getStatusLine());
             String result = EntityUtils.toString(dresponse.getEntity());
             
             String toEmail = CARRIER_SERVICE.generateEmailAddress(phoneNumber, CARRIER_SERVICE.retrieveCarrire(result));
             if (toEmail == null) {
+            	logger.warn("No carrier information about this number found, status : " + dresponse.getStatusLine());
             	throw new Exception("No carrier information about this number found");
             }
             EMAIL_SERVICE.sendEmail(toEmail, replyEmail, subject, body);
             
-            System.out.println("All Done!");
+            logger.info("Message sending successfully.");
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error("Message sending fail due to " + e.getStackTrace());
             // TODO Add error static page
         } finally {
             httpclient.getConnectionManager().shutdown();

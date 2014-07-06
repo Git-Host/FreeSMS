@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -20,8 +24,15 @@ import org.eclipse.jetty.servlet.ServletHolder;
  *
  */
 public class Application extends HttpServlet{
-
 	private static final long serialVersionUID = 1L;
+	private static Logger logger = Logger.getLogger(Application.class);
+	
+	public Application() {
+		// Log initialization
+		ConsoleAppender appender = new ConsoleAppender(new PatternLayout());
+		logger.setLevel(Level.INFO);
+		logger.addAppender(appender);
+	}
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -42,6 +53,7 @@ public class Application extends HttpServlet{
 		context.addServlet(new ServletHolder(new MessageService()), "/sendMessage");
 		
 		server.start();
+		logger.info("Server starts at 5000");
 		server.join();
 	}
 

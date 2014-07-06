@@ -9,6 +9,11 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
  
 /**
  * Class responsible for email work.
@@ -26,9 +31,15 @@ import javax.mail.internet.MimeMessage;
  *
  */
 public class EmailService {
-	// TODO change password back in local 
 	private static final String OFFICIAL_EMAIL = "freesmsOfficial@gmail.com";
 	private static final String OFFICIAL_PASSWORD = "PASSWORD";
+	private static Logger logger = Logger.getLogger(EmailService.class);
+	
+	public EmailService() {
+		ConsoleAppender appender = new ConsoleAppender(new PatternLayout());
+		logger.setLevel(Level.INFO);
+		logger.addAppender(appender);
+	}
 	
 	/**
 	 * Send email
@@ -62,8 +73,9 @@ public class EmailService {
  
 			Transport.send(message);
  
-			System.out.println("Done");
+			logger.info("Email sending success.");
 		} catch (MessagingException e) {
+			logger.warn("Email sending fail.");
 			throw new RuntimeException(e);
 		}
 	}

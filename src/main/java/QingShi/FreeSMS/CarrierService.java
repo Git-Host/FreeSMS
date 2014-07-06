@@ -1,5 +1,10 @@
 package QingShi.FreeSMS;
 
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+
 import JSON.CarrierLookUpResults;
 
 import com.google.gson.Gson;
@@ -11,6 +16,14 @@ import com.google.gson.GsonBuilder;
  * @author shiqing
  */
 public class CarrierService {
+	private static Logger logger = Logger.getLogger(CarrierService.class);
+
+	public CarrierService() {
+		ConsoleAppender appender = new ConsoleAppender(new PatternLayout());
+		logger.setLevel(Level.INFO);
+		logger.addAppender(appender);
+	}
+	
 	/**
 	 * Retrieve the carrier information form returned JSON object.
 	 */
@@ -28,11 +41,13 @@ public class CarrierService {
 	 * @return
 	 */
 	public String generateEmailAddress(String phoneNumber, String carrierName) {
+		String email = null;
 		for (Carrier carrier : Carrier.values()) {
 			if (carrierName.equals(carrier.getCarrierName())) {
-				return phoneNumber + carrier.getEmailSuffix();
+				email = phoneNumber + carrier.getEmailSuffix();
 			}
 		}
-		return null;
+		logger.info("Generating email address : " + email);
+		return email;
 	}
 }
