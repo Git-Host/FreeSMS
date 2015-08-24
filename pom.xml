@@ -59,4 +59,17 @@
     	<version>2.2.4</version>
     </dependency>
   </dependencies>
+  <build>
+      <finalName>FreeSMS</finalName>
+        <plugins>
+          <plugin>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>2.1.1</version>
+            <configuration>
+              <outputDirectory>target</outputDirectory>
+              <warName>ROOT</warName>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
 </project>
